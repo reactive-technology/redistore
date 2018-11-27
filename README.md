@@ -1,0 +1,2 @@
+# redisstore
+redis document storage
