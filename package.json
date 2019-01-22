@@ -1,6 +1,6 @@
 {
   "name": "redistore",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "redis simple document storage api",
   "main": "lib/index.js",
   "directories": {
