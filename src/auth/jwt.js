@@ -15,7 +15,8 @@ const register = function (server, options) {
   });
 
   server.register(require('hapi-auth-jwt2'));
-  //logger && logger.log('adding jwt',Settings)
+  logger && logger.log('adding jwt',Settings)
+  console.log('adding jwt',Settings)
   server.auth.strategy(Settings.app_webedia_auth_strategy, 'jwt', {
     key: Settings.jwtPrivateKey,
     headerKey: true,

@@ -1,8 +1,14 @@
-const redisthunk = require('thunk-redis');
-const os = require('os');
 
-class RedisClientFactory {
-  constructor(conf) {
+
+const {createClient}  = require('thunk-redis');
+//import os from 'os';
+
+export class RedisClientFactory {
+  private host: string;
+  private password: string|undefined;
+  private logger: undefined | any;
+  private port: string[];
+  constructor(conf:any=undefined ) {
     this.host = conf && conf.host || 'localhost';//os.hostname();
     this.password = conf && conf.password || undefined;
     this.port = conf && conf.port && conf.port.split(',') || ['6379'];
@@ -10,13 +16,13 @@ class RedisClientFactory {
     console.log('using redis client at',this.host,this.port)
   }
 
-  info(msg) {
+  info(msg: string) {
     if (this.logger) {
       this.logger.info(msg);
     }
   }
 
-  error(msg) {
+  error(msg: string) {
     if (this.logger) {
       this.logger.error(msg);
     }
@@ -26,19 +32,23 @@ class RedisClientFactory {
     if (this.host.indexOf(',') != -1) {
       return this.host.split(',');
     }
+    /*
     if (this.port.indexOf(',') != -1) {
       return this.port.split(',')
         .map(
           port => `${this.host}:${parseInt(port)}`
         );
     }
+    */
+
     return [`${this.host}:${this.port}`];
   }
 
   getOptions() {
     const opt = {
       usePromise: true,
-      clusterMode: true
+      clusterMode: true,
+      authPass: ""
     };
     if (this.password) {
       opt.authPass = this.password;
@@ -50,7 +60,8 @@ class RedisClientFactory {
     return this.port.map((port, index) => {
       const conf = {
         host: this.host,
-        port: parseInt(port) + index,
+        port: parseInt(port) + index, password: ""
+
       };
       if (this.password) {
         conf.password = this.password;
@@ -59,7 +70,7 @@ class RedisClientFactory {
     });
   }
 
-  createClient(userName, onFailure, onConnect) {
+  createClient(userName: string, onFailure: (arg0: any) => void, onConnect: () => void) {
     try {
       const type = this ? 'internal' : 'external';
       const me = this || new RedisClientFactory();
@@ -69,7 +80,7 @@ class RedisClientFactory {
       // const client = redis.createClient(this.getConf());
       let client;
       // const client = redisthunk.createClient(this.getConf());
-      client = redisthunk.createClient(this.getHosts(), this.getOptions());
+      client = createClient(this.getHosts(), this.getOptions(), undefined);
 
       // const client = new Redis.Cluster(me.getConf());
 
@@ -80,23 +91,20 @@ class RedisClientFactory {
         onConnect && onConnect();
       });
 
-      client.on('error', err => {
+      client.on('error', (err:Error) => {
         this.info(`REDIS CONNECT error ${err} : ${type}`);
-        this.error('node error', err.lastNodeError);
+        this.error('node error');
 
         onFailure && onFailure(err);
         //sleep(5000);
       });
       return client;
-    } catch (e) {
+    } catch (err) {
       this.error('ERROR CREATING NEW CLIENT FOR REDIS FROM user : ' + userName);
-      this.error('Error : ' + e.message);
-      this.error(e.stack);
+      this.error('Error : ' + err.message);
+      this.error(err.stack);
 
       return null;
     }
   }
 };
-
-
-module.exports = RedisClientFactory;

@@ -1,18 +1,45 @@
 {
   "compilerOptions": {
-    "outDir": "./dist",
-    "allowJs": false,
-    "sourceMap": true,
-    "target": "es2015",
+    "outDir": "dist",
+    "target": "esnext",
     "module": "commonjs",
     "strict": true,
+    "jsx": "preserve",
+    "importHelpers": true,
     "moduleResolution": "node",
-    "resolveJsonModule": true
+    "experimentalDecorators": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "sourceMap": true,
+    "baseUrl": "./src",
+    "rootDirs": [
+      "src",
+      "dist"
+    ],
+    "types": [
+      "chai"
+    ],
+    "paths": {
+      "@/*": [
+        "./*"
+      ]
+    },
+    "lib": [
+      "es5",
+      "es6",
+      "esnext",
+      "dom",
+      "dom.iterable",
+      "scripthost"
+    ]
   },
   "include": [
-    "./src/**/*",
+    "src/**/*.ts",
+    "tests/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
-  ],
+    "node_modules",
+    "dist",
+    "public"
+  ]
 }

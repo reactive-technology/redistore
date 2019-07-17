@@ -1,4 +1,8 @@
+
 import { IObject, IServerConfig } from "./interface";
+export * from "./interface";
+export * from "./validators";
+
 import {Request, Server, ServerRoute} from "hapi";
 
 const Hapi = require("hapi");
@@ -12,8 +16,9 @@ const Joi = require("joi");
 const Pack = require("../package");
 const Jwt = require("./auth/jwt");
 const Auth = require("./auth");
-const RedisClientFactory = require("./redisClientFactory");
-const RedisStore = require("./redistore");
+import {RedisClientFactory} from "./redisClientFactory";
+
+import {RedisStore} from "./redistore";
 
 const USE_AUTH = true;
 const clientProtocol = process.env.HTTP_PROTOCOL || "http";
@@ -40,6 +45,7 @@ class WebSocketServer {
     onRequest?: IHookFunc;
   } = {};
   private hapi: Server;
+
   private users: { john: { password: string; username: string } } = {
     john: {
       username: "anonymous",
@@ -47,7 +53,11 @@ class WebSocketServer {
     }
   };
   private store: any;
-  constructor(conf?: IServerConfig) {
+  get conf(){
+    const {  port, host   } = this;
+    return { port, host };
+  }
+  private constructor(conf?: IServerConfig) {
     this.host = (conf && conf.host) || "localhost";
     this.password = conf && conf.password;
     this.port = (conf && conf.port) || NODE_PORT;
@@ -114,11 +124,11 @@ class WebSocketServer {
     );
   }
 
-  onRequest(func: IHookFunc) {
+  public onRequest(func: IHookFunc) {
     this.hooks.onRequest = func;
   }
 
-  static async createInstance(conf:IServerConfig, routes:ServerRoute[], subscriptions:IObject[], hapiOptions:IObject) {
+  static async createInstance(conf?:IServerConfig, routes?:ServerRoute[], subscriptions?:IObject[], hapiOptions?:IObject) {
     const _server = new WebSocketServer(conf);
     await _server._start(routes, subscriptions, hapiOptions);
     return _server;
@@ -174,7 +184,7 @@ class WebSocketServer {
     refs && refs.map && refs.map(ref => this.publishRef(ref));
   }
 
-  async _start(routes:ServerRoute[], _subscriptions:any[], hapiOptions:IObject) {
+  async _start(routes?:ServerRoute[], _subscriptions?:any[], hapiOptions?:IObject) {
     const onDisconnection = async (r: Request, h: any) => {
       try {
         if (this.hooks.onDisconnection) {
@@ -231,7 +241,7 @@ class WebSocketServer {
           params[keyword] = Joi.string();
         }
       });
-      // this.logger.log('params', thepath, params);
+       //this.logger.log('params',  params);
       return { params };
     };
 
@@ -242,7 +252,9 @@ class WebSocketServer {
         cors,
         id: path.replace("/", ""),
         // auth:'jwt-admin-users-webedia',
-        handler: (request:Request, h:any) => this.store.collection(),
+        handler: (request:Request, h:any) => {
+          return this.store.collection()
+        },
         description: "cache storage",
         // tags: ['api', 'redis cache storage'],
         validate: validation(path)
@@ -306,6 +318,7 @@ class WebSocketServer {
     // await this.hapi.register([Basic, Nes]);
     const validate = async (request:Request, username:string, password:string) => {
       // const isValid = await Bcrypt.compare(password, user.password);
+      console.log('check basic auth',password, password)
       const isValid = true;
       const credentials = {
         id: username,
@@ -335,7 +348,11 @@ class WebSocketServer {
                   {},
                   {
                     handler: async () =>
-                      await this.store.collection(route.path).get()
+                    {
+                      const doc = this.store.collection(route.path);
+                      const resp = await doc.get();
+                      return resp;
+                    }
                   },
                     // @ts-ignore
                 route.config || {}

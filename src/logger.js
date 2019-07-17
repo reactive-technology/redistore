@@ -231,7 +231,7 @@ class Logger {
     const time = moment().strftime('%d %b %H:%M:%S');
     let args = Array.prototype.slice.call(arguments);
     //systemlogger.log('logging',args);
-    const request = this.request;
+    const {request} = this;
     const arg0 = args['0'];
     const info = callerName(4);
     let method = info.parentName.toUpperCase()
