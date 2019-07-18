@@ -326,6 +326,14 @@ export class RedisStore {
             this.redlock = getRedlock(this.redisClient);
             this.where_clauses = [];
             if (!type) {
+                if(!this.projectId){
+                    if (parent.config.projectId) {
+                        this.projectId = parent.config.projectId;
+                    } else {
+                        this.projectId = 'undefined';
+                        this.logger.warn('projectId not specified!');
+                    }
+                }
                 type = TYPE_DOCUMENT;
                 docName = `db:${this.projectId}`;
                 parent = {pathName: ''};
@@ -399,7 +407,7 @@ export class RedisStore {
         }
     }
 
-    doc(docName: { split: (arg0: string) => void; }): any {
+    doc(docName: string|undefined = undefined): any {
         try {
             // this.logger.log(' doc','on proxy ', this.pathName,'type',this.docType,'ref',this.ref.constructor.name);
             if (this.id && this.docType === TYPE_COLLECTION) {
