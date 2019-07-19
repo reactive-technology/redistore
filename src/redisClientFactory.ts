@@ -2,6 +2,7 @@
 
 const {createClient}  = require('thunk-redis');
 //import os from 'os';
+const REDIS_HOST = process.env.HTTP_HOST || 'localhost';
 
 export class RedisClientFactory {
   private host: string;
@@ -9,7 +10,7 @@ export class RedisClientFactory {
   private logger: undefined | any;
   private port: string[];
   constructor(conf:any=undefined ) {
-    this.host = conf && conf.host || 'localhost';//os.hostname();
+    this.host = conf && conf.host || REDIS_HOST;//os.hostname();
     this.password = conf && conf.password || undefined;
     this.port = conf && conf.port && conf.port.split(',') || ['6379'];
     this.logger = conf && conf.logger;
