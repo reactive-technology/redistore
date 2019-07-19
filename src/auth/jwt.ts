@@ -1,10 +1,19 @@
 const Config = require('../config');
 const Settings = Config.settings;
 const Utils = require('../utils');
-const logger = null;
+//let logger = console;
 
+function log(){
+  if(logger && logger.log) {
+    // @ts-ignore
+    logger.log.apply(logger, arguments);
+  }
+}
 
-const register = function (server, options) {
+//const applicationKeys:{id:string}[]=[];
+//const userKeys:{id:string}[]=[];
+
+const register = function (server:any) {
   server.state(Settings.jwtCookieName, {
     ttl: null,
     isSecure: false,
@@ -15,7 +24,9 @@ const register = function (server, options) {
   });
 
   server.register(require('hapi-auth-jwt2'));
-  logger && logger.log('adding jwt',Settings)
+  if(logger && logger.log) {
+    logger.log('adding jwt', Settings);
+  }
   console.log('adding jwt',Settings)
   server.auth.strategy(Settings.app_webedia_auth_strategy, 'jwt', {
     key: Settings.jwtPrivateKey,
@@ -23,7 +34,7 @@ const register = function (server, options) {
     cookieKey: Settings.jwtCookieName,
     verifyOptions: { algorithms: ['HS256'], expiresIn: '24h' },
     // Implement validation function
-    validate: (decoded, request, callback) => {
+    validate: (decoded:any, request:any, callback:any) => {
       // NOTE: This is purely for demonstration purposes!
       logger && logger.log(['jwt', 'auth', 'app'],
         'app_webedia_auth_strategy : decoded token', JSON.stringify(decoded)      );
@@ -42,8 +53,8 @@ const register = function (server, options) {
       }
       request.app.deviceId = decoded.applicationKey + '.' + decoded.deviceId;
       if (
-        applicationKeys.find(u => u.id === decoded.applicationKey)
-        || userKeys.find(u => u.id === decoded.applicationKey)
+        applicationKeys.find((u:any) => u.id === decoded.applicationKey)
+        || userKeys.find((u:any) => u.id === decoded.applicationKey)
       ) {
         logger && logger.log(['jwt', 'auth', 'app'], 'device ', decoded.applicationKey, 'found!');
         try {
@@ -52,7 +63,7 @@ const register = function (server, options) {
           logger && logger.trace(e);
           return callback(null, true, 'validation error');
         }
-      } else if (!userKeys.find(u => u.id === decoded.applicationKey)) {
+      } else if (!userKeys.find((u:any) => u.id === decoded.applicationKey)) {
         logger && logger.log(['jwt', 'auth', 'app'], 'device ', decoded.applicationKey, 'found in users!');
       }
 
@@ -66,13 +77,13 @@ const register = function (server, options) {
     headerKey: true,
     verifyOptions: { algorithms: ['HS256'] },
     // Implement validation function
-    validate: (decoded, request, callback) => {
+    validate: (decoded:any, request:any, callback:any) => {
       // NOTE: This is purely for demonstration purposes!
       logger && logger.log(['jwt', 'auth', 'user'], {
         'admin_users_auth_strategy : decoded token': decoded,
       });
 
-      if (userKeys.find(u => u.id === decoded.applicationKey)) {
+      if (userKeys.find((u:any) => u.id === decoded.applicationKey)) {
         logger && logger.log(['jwt', 'auth', 'user'], 'device ', decoded.applicationKey, 'found!');
         try {
           return callback(null, true, decoded);

@@ -1,8 +1,9 @@
 {
   "compilerOptions": {
-    "outDir": "dist",
+    "outDir": "./dist",
     "target": "esnext",
     "module": "commonjs",
+    "declaration": true,
     "strict": true,
     "jsx": "preserve",
     "importHelpers": true,

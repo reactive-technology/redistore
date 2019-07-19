@@ -6,7 +6,7 @@ import WebServer from './webSocketServer';
 import {IServerConfig, schema } from './webSocketServer';
 import { NullableValidationMetadata, ValidationMetadata, PropertyValidationSchema } from '@/interface';
 import { mustBe,  a } from "./validators";
-import * as Joi from "joi";
+//import * as Joi from "joi";
 //export declare function createSchemaFromMetadata<T>(metadata: ValidationMetadata<T>): PropertyValidationSchema;
 
 

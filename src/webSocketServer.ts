@@ -33,7 +33,7 @@ const cors = {
 };
 export type IHookFunc = (request: Request, h: any) => void;
 
-class WebSocketServer {
+export class WebSocketServer {
   private host: string;
   private password?: string;
   private port: string | number;

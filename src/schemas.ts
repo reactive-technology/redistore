@@ -3,7 +3,7 @@ import {
     PropertyValidationSchema,
     ValidationMetadata
 } from "zafiro-validators/dts/interfaces";
-import * as Joi from "joi";
+import {object} from "joi";
 
 const VALIDATION_RULES = "VALIDATION_RULES";
 
@@ -19,7 +19,7 @@ function createSchemaFromMetadata<T>(
     });
     //console.log('find keys',obj)
     // @ts-ignore
-    return Joi.object().keys(obj);
+    return object().keys(obj);
 }
 
 

@@ -16,13 +16,14 @@ const applicationKeys = [
   }
 ];
 
-
+const admin_users_auth_strategy = 'jwt-admin-users-webedia';
+// @ts-ignore
 const settings = {
   jwtPrivateKey: 'Webedia-API-Mediation-7891325301238884445',
   app_webedia_auth_strategy: 'jwt-app-webedia',
-  admin_users_auth_strategy: 'jwt-admin-users-webedia',
+  admin_users_auth_strategy,
   admin_authentication: {
-    strategy: this.admin_users_auth_strategy,
+    strategy: admin_users_auth_strategy,
     scope: ['admin'],
   },
   jwtCookieName: 'token',

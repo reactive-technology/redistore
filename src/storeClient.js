@@ -1,14 +1,11 @@
 const TYPE_DOCUMENT = 'doc';
 const TYPE_COLLECTION = 'collection';
-/*
 const TYPE_QUEUE = 'queue';
 const TYPE_LIST = 'list';
 const TYPE_SORTED_LIST = 'scores';
-const toInt = (x:string|number, def:any) => isNaN(x) ? 0 : parseInt(x);
-*/
-
-const Logger = require('./logger');
 const cuid = require('cuid');
+const toInt = (x, def) => isNaN(x) ? 0 : parseInt(x);
+const Logger = require('./logger');
 
 const ioReq = require("socket.io-request");
 const io = require('socket.io-client');
@@ -30,9 +27,7 @@ socket.on('disconnect', function () {
 
 
 class DocumentSnapshot {
-  private _data: any;
-  private id: any;
-  constructor(id:any, data:any) {
+  constructor(id, data) {
     this._data = data;
     this.id = id;
   }
@@ -44,9 +39,7 @@ class DocumentSnapshot {
 }
 
 class QuerySnapshot {
-  private _data: any;
-  private id: any;
-  constructor(id:any, data:any) {
+  constructor(id, data) {
     this._data = data;
     this.id = id;
   }
@@ -55,19 +48,15 @@ class QuerySnapshot {
     return this._data;
   }
 
-  forEach(cb:any) {
-    this._data.forEach((data:any) => {
+  forEach(cb) {
+    this._data.forEach(data => {
       cb && cb(new DocumentSnapshot(data && data._id, data))
     })
   }
 }
 
 class RedisStoreClient {
-  private where_clauses: any[];
-  private id: string;
-  private _id: string;
-  private docType: string;
-  constructor(parent:any, type:any=undefined, docName:any=undefined) {
+  constructor(parent, type, docName) {
     try {
       this.where_clauses = [];
       if (!type) {

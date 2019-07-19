@@ -6,7 +6,7 @@ const RedisPubSub = require('node-redis-pubsub');
 const stringify = require('json-stable-stringify');
 const sha1 = require('sha1');
 // @ts-ignore
-import Promise = require('bluebird')
+//import Promise = require('bluebird')
 
 const TYPE_DOCUMENT = 'doc';
 const TYPE_ITEM = 'item';
@@ -265,9 +265,11 @@ export class RedisStore {
     private types: any;
     private _lock: any;
     private unsubscribe: any;
-    get path(){
+
+    get path() {
         return this.pathName;
     }
+
     constructor(parent: any, type: any = undefined,
                 docName: any = undefined, rankingField: {} | undefined = undefined) {
         try {
@@ -326,7 +328,7 @@ export class RedisStore {
             this.redlock = getRedlock(this.redisClient);
             this.where_clauses = [];
             if (!type) {
-                if(!this.projectId){
+                if (!this.projectId) {
                     if (parent.config.projectId) {
                         this.projectId = parent.config.projectId;
                     } else {
@@ -407,7 +409,7 @@ export class RedisStore {
         }
     }
 
-    doc(docName: string|undefined = undefined): any {
+    doc(docName: string | undefined = undefined): any {
         try {
             // this.logger.log(' doc','on proxy ', this.pathName,'type',this.docType,'ref',this.ref.constructor.name);
             if (this.id && this.docType === TYPE_COLLECTION) {
@@ -563,7 +565,7 @@ export class RedisStore {
         return this;
     }
 
-    async getDocumentIndexes(pathIndexes = 'toto') {
+    async getDocumentIndexes(pathIndexes = 'toto') : Promise<any> {
         let indexes = null;
         try {
             if (!pathIndexes) {

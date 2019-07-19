@@ -7,7 +7,7 @@ const requestIp = require('request-ip');
 //const ENV = (process.env.NODE_ENV || 'development').toUpperCase().slice(0,4);
 
 // const DbUrl = 'mongodb://localhost:27017/hapi-app';
-function getClientIp(request) {
+function getClientIp(request:any) {
   return requestIp.getClientIp(request);
 };
 
@@ -28,7 +28,7 @@ module.exports.callerName=() =>{
 };
 
 
-module.exports.getCredentialsFromPayLoad = (request,AppKey) => {
+module.exports.getCredentialsFromPayLoad = (request:any,AppKey:any) => {
   const payload = request.payload;
   const applicationId = payload.applicationKey;
   const customerId = payload.deviceId || '0';

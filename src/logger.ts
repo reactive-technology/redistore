@@ -27,11 +27,11 @@ try {
   }
 }
 
-function isString(s) {
+function isString(s:any) {
   return typeof(s) === 'string' || s instanceof String;
 }
 
-function toString(arg) {
+function asString(arg:any) {
   let f = '';
   if (typeof arg === 'undefined') {
     return '';
@@ -49,7 +49,7 @@ function toString(arg) {
 }
 
 systemlogger.log('check dir access for logging path= ', logPath);
-require('chmodr')(logPath, 0o777, function (err) {
+require('chmodr')(logPath, 0o777, function (err:any) {
   if (err) {
     systemlogger.error(err);
   } else {
@@ -74,7 +74,7 @@ var transportError = new (winston.transports.DailyRotateFile)({
   maxFiles: '2d',
   level: 'error',
 });
-const format = winston.format.printf(info => {
+const format = winston.format.printf((info:any) => {
   return `${info.message}`;
 });
 const transports = [
@@ -139,19 +139,22 @@ const colorCodes = {
   BgWhite: '\x1b[47m',
 };
 
-const colors = () => {
+const colors =  {
+
 };
 
 Object.keys(colorCodes)
-  .map(c => colors[c] = (s) => COLORED_CONSOLE === 'yes' ? colorCodes[c] + s + ColorReset : s);
+  .map((c:string) =>
+// @ts-ignore
+      colors[c] = (s) => COLORED_CONSOLE === 'yes' ? colorCodes[c] + s + ColorReset : s);
 
-const getClientIp = (request) => {
+const getReqClientIp = (request:any) => {
   //return requestIp.getClientIp(request);
   const ip = request && request.info && request.info.remoteAddress;
   return ip ? `ip:${ip}` : '';
 };
 
-const toCommonLogFormat = (request, logType, caller) => {
+const toCommonLogFormat = (request:any, logType:any, caller:any) => {
   var application = request && request.auth && request.auth.credentials && request.auth.credentials.application || '',
     service = request && request.auth && request.auth.credentials && request.auth.credentials.service || '',
     deviceId = request && request.auth && request.auth.credentials && request.auth.credentials.deviceId || '',
@@ -168,25 +171,27 @@ const toCommonLogFormat = (request, logType, caller) => {
     }
   } catch (e) {
   }
-  const clientIp = getClientIp(request);
+  const clientIp = getReqClientIp(request);
   logType = logType || 'INFO';
   const hostname = os.hostname();
   const api = request && request.path && request.path.replace('/api/1', '').replace('.json', '');
   return [hostname, clientIp, hrend, ENV, logType, caller, method, api];
 };
 
-const toCommonLogFormatLite = (request, logType, caller) => {
+const toCommonLogFormatLite = (request:any, logType:any, caller:any) => {
   const formatted = toCommonLogFormat(request, logType, caller)
-    .map(e => `"${toString(e)}"`)
+    .map(e => `"${asString(e)}"`)
     .join(',') + ' '.replace(/\n/g, ' ')
   ;
   if (logType === 'ERROR') {
+    // @ts-ignore
     return colors.red(formatted);
   }
+  // @ts-ignore
   return colors.cyan(formatted);
 };
 
-const callerName = (level = 4) => {
+const callerName = (level:number = 4) => {
   try {
     throw new Error();
   }
@@ -197,10 +202,10 @@ const callerName = (level = 4) => {
         .slice(1)
         .reverse()
         .join('/');
-      const stackLine = e.stack.split('at ')[level].replace(basePath, '.')
+      const stackLine:string = e.stack.split('at ')[level].replace(basePath, '.')
         .replace('\n', '');
-      const funcName = e.stack.split('at ')[level].split(' ')[0];
-      const parentName = e.stack.split('at ')[level - 1].split(' ')[0];
+      const funcName:string = e.stack.split('at ')[level].split(' ')[0];
+      const parentName:string = e.stack.split('at ')[level - 1].split(' ')[0];
 
       return {
         parentName,
@@ -208,19 +213,22 @@ const callerName = (level = 4) => {
         funcName,
       };
     } catch (e) {
-      return '';
+      return {parentName:'',
+          stackLine:'',
+          funcName:'',};
     }
   }
 
 };
 
 class Logger {
+  public request: any;
 
-  toCommonLogFormatLite(request, logType, caller) {
+  toCommonLogFormatLite(request:any, logType:any, caller:any) {
     return toCommonLogFormatLite(request, logType, caller);
   }
 
-  getLogger(request) {
+  getLogger(request:any) {
     //const l = Object.create(Logger);
     const l = new Logger();
     l.request = request;
@@ -232,18 +240,19 @@ class Logger {
     let args = Array.prototype.slice.call(arguments);
     //systemlogger.log('logging',args);
     const {request} = this;
-    const arg0 = args['0'];
-    const info = callerName(4);
+    const arg0 = args[0];
+    const info:{  parentName:string,  stackLine:string,  funcName:string} = callerName(4);
     let method = info.parentName.toUpperCase()
-      .replace('LOGGER.', '')
-      .replace('CONSOLE.', '')
-      .replace('CONSOLE.', '');
+          .replace('LOGGER.', '')
+          .replace('CONSOLE.', '')
+          .replace('CONSOLE.', '');
+
     const formatted = toCommonLogFormat(request || arg0, method, info.stackLine);
     const [hostname, clientIp, duration, ENV, logType, caller, http_method, api] = formatted;
     if (arg0 && arg0.params && arg0.query) {
-      args['0'] = time;
+      args[0] = time;
     }
-    const formattedArgs = [...formatted, ...args].map(arg => toString(arg)).join(',');
+    const formattedArgs = [...formatted, ...args].map(arg => asString(arg)).join(',');
     method = method.toLowerCase();
     const method1 = (method === 'log') ? 'info' : method;
     if (USE_WINSTON === 'yes' && wLogger[method]) {
@@ -259,7 +268,7 @@ class Logger {
         };
         // A text log entry
         const entry = stackDriverLogger.entry({ labels, resource },
-          hostname + ' -> ' + args.map(arg => toString(arg)).join(' '));
+          hostname + ' -> ' + args.map(arg => asString(arg)).join(' '));
         // Save the two log entries. You can write entries one at a time, but it is
         // best to write multiple entires together in a batch.
         const logMethod = method && stackDriverLogger[method] || stackDriverLogger['info'];
@@ -269,48 +278,57 @@ class Logger {
             //console.log(`Wrote to ${logName}`);
             //process.stdout.write(`Wrote to ${logName}`);
           })
-          .catch(err => {
+          .catch((err:Error) => {
             //console.error('ERROR:', err);
             process.stderr.write('LOGGER ERROR:' + err.message);
           });
       }
     } else {
-      process.stdout.write.apply(process.stdout, args);
+      // @ts-ignore
+        process.stdout.write.apply(process.stdout, args);
     }
   }
 
   info() {
-    this._log.apply(this, arguments);
+    // @ts-ignore
+      this._log.apply(this, arguments);
   }
 
   warn() {
-    this._log.apply(this, arguments);
+    // @ts-ignore
+      this._log.apply(this, arguments);
   }
 
   error() {
-    this._log.apply(this, arguments);
+    // @ts-ignore
+      this._log.apply(this, arguments);
   }
 
   debug() {
     if (CONSOLE_DEBUG_LEVEL === 'yes') {
-      this._log.apply(this, arguments);
+      // @ts-ignore
+        this._log.apply(this, arguments);
     }
   }
 }
 
 const formatedLogger = new Logger();
-console.warn = function (a) {
-  formatedLogger._log.apply(formatedLogger, arguments);
-};
-console.log = function (a) {
-  formatedLogger._log.apply(formatedLogger, arguments);
-};
-console.error = function (a) {
-  formatedLogger._log.apply(formatedLogger, arguments);
-};
-console.debug = function (a) {
-  if (CONSOLE_DEBUG_LEVEL === 'yes') {
+console.warn = function (a:any) {
+  // @ts-ignore
     formatedLogger._log.apply(formatedLogger, arguments);
+};
+console.log = function (a:any) {
+  // @ts-ignore
+    formatedLogger._log.apply(formatedLogger, arguments);
+};
+console.error = function (a:any) {
+  // @ts-ignore
+    formatedLogger._log.apply(formatedLogger, arguments);
+};
+console.debug = function (a:any) {
+  if (CONSOLE_DEBUG_LEVEL === 'yes') {
+    // @ts-ignore
+      formatedLogger._log.apply(formatedLogger, arguments);
   }
 };
 

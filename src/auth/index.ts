@@ -1,14 +1,17 @@
 const Handlers = require('./handlers');
-const Validation = require('../config').validation;
-const Joi = require('joi');
+//const Validation = require('../config').validation;
+//const Joi = require('joi');
+/*
 const Relish = require('relish')({
   messages: {
     'applicationKey': 'Please enter a valid application key',
     'deviceId': 'Please enter a valid deviceId'
   }
 });
+*/
+
 const NO_CACHE = false;
-const register = (plugin, options) => {
+const registerFunc = (plugin:any) => {
   plugin.route([
     {
       path: '/account/checkIn',
@@ -52,7 +55,7 @@ const register = (plugin, options) => {
 };
 
 module.exports = {
-  register,
+  register: registerFunc,
   version: '1.0.0',
   name: 'auth',
 };

@@ -2,15 +2,19 @@ const config = require('../config');
 const Package = require('../../package.json');
 const JWT = require('jsonwebtoken');
 const Boom = require('boom');
-const Utils = require('../utils');
-const Settings = config.settings;
-const { applicationKeys } = config;
-const logger = null;
+const Utility = require('../utils');
+const PluginSettings = config.settings;
+//const { applicationKeys, userKeys } = config;
+let logger: { log: any
+  trace(e: any): { log: any };
+  error:any;
+} ;
+
 
 module.exports = {
-  checkIn: (server) => {
-    return (request, reply) => {
-      logger && logger.log('-----------------> checkIn');
+  checkIn: (server:any) => {
+    return (request:any, reply:any) => {
+      logger && logger.log('-----------------> checkIn',!!server);
       let token = 0;
       let expiresIn = '10m';
       try {
@@ -21,10 +25,10 @@ module.exports = {
         }
         const applicationKey = request.payload && request.payload.applicationKey;
 
-        let foundAppKeys = applicationKeys.find(u => u.id === applicationKey);
+        let foundAppKeys = applicationKeys.find((u:{id:string}) => u.id === applicationKey);
         if (!foundAppKeys) {
           logger && logger.log('APP KEY not found, check for user key');
-          foundAppKeys = userKeys && userKeys.find(u => u.id === request.payload.applicationKey);
+          foundAppKeys = userKeys && userKeys.find((u:{id:string}) => u.id === request.payload.applicationKey);
           if (!foundAppKeys) {
             throw Boom.unauthorized('invalid credentials');
           } else {
@@ -35,7 +39,7 @@ module.exports = {
         }
         expiresIn = foundAppKeys && foundAppKeys.expiresIn || expiresIn;
 
-        const payload = Utils.getCredentialsFromPayLoad(request, foundAppKeys);
+        const payload = Utility.getCredentialsFromPayLoad(request, foundAppKeys);
 
 
         logger && logger.log('sign with payload', payload);
@@ -43,7 +47,7 @@ module.exports = {
 
         token = JWT.sign(
           payload,
-          Settings.jwtPrivateKey, Object.assign(Settings.jwtVerifyOptions, {
+          PluginSettings.jwtPrivateKey, Object.assign(PluginSettings.jwtVerifyOptions, {
             expiresIn
           }));
 
@@ -55,6 +59,7 @@ module.exports = {
           ms: 0.001
         };
         const ttl = (([duration, unit]) =>
+            // @ts-ignore
           (duration && unit && units[unit] && duration * units[unit] || 0))
         (expiresIn.replace(/\s*(\d+)\s*(.*)/g, '$1|$2')
           .split('|'));
@@ -70,7 +75,7 @@ module.exports = {
           ttl,
           token
         })
-          .state(Settings.jwtCookieName, token);
+          .state(PluginSettings.jwtCookieName, token);
 
       } catch (e) {
         logger && logger.trace(e);
@@ -80,12 +85,12 @@ module.exports = {
 
 
   },
-  page404: (request, reply) => {
+  page404: (request:any, reply:any) => {
     logger && logger.log('page404', request);
     reply.response({ result: 'Oops, 404 Page!' })
       .code(404);
   },
-  healthCheck: (request, reply) => {
+  healthCheck: (request:any, reply:any) => {
     //logger && logger.log('--> healthcheck reply');
     return reply.response({ result: 'hey, I am still alive!' });
   }

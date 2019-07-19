@@ -3,7 +3,7 @@ import {
     PropertyValidationSchema,
     ValidationMetadata
 } from "zafiro-validators/dts/interfaces";
-import * as Joi from "joi";
+//import * as Joi from "joi";
 
 export interface IObjectIndexer<T> {
     [id: string]: T;
