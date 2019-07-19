@@ -1,6 +1,6 @@
 {
   "name": "redistore",
-  "version": "1.2.11",
+  "version": "1.2.13",
   "description": "redis simple document storage api",
   "main": "dist/index.js",
   "directories": {
@@ -32,6 +32,7 @@
   "dependencies": {
     "@hapi/hapi": "^18.3.1",
     "@types/bluebird": "^3.5.27",
+    "@types/dotenv": "^6.1.1",
     "@types/hapi": "^18.0.2",
     "@types/jsonwebtoken": "^8.3.2",
     "@types/node": "^12.0.8",
@@ -39,6 +40,7 @@
     "bluebird": "^3.5.5",
     "boom": "^7.2.2",
     "cuid": "^2.1.4",
+    "dotenv": "^8.0.0",
     "flat": "^4.1.0",
     "hapi": "^17.8.1",
     "hapi-auth-basic": "^5.0.0",
