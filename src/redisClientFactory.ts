@@ -2,7 +2,7 @@
 
 const {createClient}  = require('thunk-redis');
 //import os from 'os';
-const REDIS_HOST = process.env.HTTP_HOST || 'localhost';
+const REDIS_HOST = process.env.REDIS_HOST || 'localhost';
 
 export class RedisClientFactory {
   private host: string;

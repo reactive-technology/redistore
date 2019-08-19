@@ -70,7 +70,7 @@ export class WebSocketServer {
     const logger = console;
     this.store = new RedisStore({
       config: {
-        projectId: "aaa",
+        projectId: conf && conf.projectId || "defaultProject",
         logger,
         factory: new RedisClientFactory({ logger })
       }
