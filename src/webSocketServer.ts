@@ -311,10 +311,7 @@ export class WebSocketServer {
                 options: swaggerOptions
             },
             Basic, //  Jwt, Auth
-            {
-                plugin: Nes,
-                options: nesOptions
-            }
+
         ];
 
         if (hapiOptions && hapiOptions.register) {
@@ -324,6 +321,12 @@ export class WebSocketServer {
                 hapiRegister.push(hapiOptions.register);
             }
         }
+
+        hapiRegister.push({
+            plugin: Nes,
+            options: nesOptions
+        });
+
         await this.hapi.register(hapiRegister);
         if (hapiOptions && hapiOptions.routes && hapiOptions.routes.prefix) {
             this.hapi.realm.modifiers.route.prefix = hapiOptions.routes.prefix;
