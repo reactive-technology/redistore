@@ -16,6 +16,7 @@ export interface IServerConfig extends IObjectIndexer<any> {
     port?:string;
     logger?:IObject;
     hooks?:IObject;
+    register?(a:any):any;
 }
 
 export {NullableValidationMetadata} from "zafiro-validators/dts/interfaces";
