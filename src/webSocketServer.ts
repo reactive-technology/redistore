@@ -270,7 +270,7 @@ export class WebSocketServer {
         }));
         _subscriptions && subscriptions.push(..._subscriptions);
         // _subscriptions && subscriptions.concat(_subscriptions);
-        const swaggerOptions = {
+        let swaggerOptions = {
             securityDefinitions: {
                 Bearer: {
                     type: "apiKey",
@@ -301,6 +301,10 @@ export class WebSocketServer {
 
         if (hapiOptions && hapiOptions.nesOptions) {
             nesOptions = Object.assign({},hapiOptions.nesOptions,nesOptions)
+        }
+
+        if (hapiOptions && hapiOptions.swaggerOptions) {
+            swaggerOptions = Object.assign({},swaggerOptions, hapiOptions.swaggerOptions)
         }
 
         const hapiRegister = [
