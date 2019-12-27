@@ -3556,6 +3556,11 @@ punycode@^1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-1.4.1.tgz#c0d5a63b2718800ad8e1eb0fa5269c84dd41845e"
 
+q@^1.5.1:
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/q/-/q-1.5.1.tgz#7e32f75b41381291d04611f1bf14109ac00651d7"
+  integrity sha1-fjL3W0E4EpHQRhHxvxQQmsAGUdc=
+
 qs@^6.5.1:
   version "6.7.0"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.7.0.tgz#41dc1a015e3d581f1621776be31afb2876a9b1bc"
@@ -3619,6 +3624,16 @@ readdirp@^2.2.1:
 redis-commands@^1.2.0:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/redis-commands/-/redis-commands-1.5.0.tgz#80d2e20698fe688f227127ff9e5164a7dd17e785"
+
+redis-js@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/redis-js/-/redis-js-0.1.2.tgz#997fd4b77150b887c401e799e423573fc57b2ef5"
+  integrity sha1-mX/Ut3FQuIfEAeeZ5CNXP8V7LvU=
+
+redis-mock@^0.47.0:
+  version "0.47.0"
+  resolved "https://registry.yarnpkg.com/redis-mock/-/redis-mock-0.47.0.tgz#65e1e0d65013ecffc0618e15a0f2d2915db699aa"
+  integrity sha512-Kbyy7xB+Sj+fPZlwtJGIVus8QfPDFxXi1d2YJ0XXxKEIPN8ciSUFt45uw8G/gGfNm+BsT3bcvBp7D+7du7s/9Q==
 
 redis-parser@^2.6.0:
   version "2.6.0"
@@ -3752,8 +3767,9 @@ resolve@^1.10.0, resolve@^1.11.0, resolve@^1.3.2, resolve@^1.5.0:
     path-parse "^1.0.6"
 
 respjs@^4.1.5:
-  version "4.1.5"
-  resolved "https://registry.yarnpkg.com/respjs/-/respjs-4.1.5.tgz#c1aa69d19b28ed539fb2f64d039aff19ea90cc69"
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/respjs/-/respjs-4.2.0.tgz#60c9dd61801db209c5bedfb9b1fd0b7d7c41ac70"
+  integrity sha512-/W219Wpyo0m6bVN9z/rqhe0ek6nJ7Tus9WhbWpA8aJI8FxtMrQw1u8RStxOswTyUrW/NXaKXuaNfKZFKYbwXkg==
 
 restore-cursor@^1.0.1:
   version "1.0.1"
@@ -4229,16 +4245,18 @@ through@^2.3.6:
   version "2.3.8"
   resolved "https://registry.yarnpkg.com/through/-/through-2.3.8.tgz#0dd4c9ffaabc357960b1b724115d7e0e86a2e1f5"
 
-thunk-redis@^2.2.3:
+thunk-redis@^2.2.4:
   version "2.2.4"
   resolved "https://registry.yarnpkg.com/thunk-redis/-/thunk-redis-2.2.4.tgz#78295a981aa1d6225e8f5309050a38739c31b2fb"
+  integrity sha512-Mlo9MQHo+6m+zhDrk/ybjqXMa7dEWkYFUiVasDmmkUwCRSs6Wyt2kyzo8ITW3LTfWovBSPYYmn6KG76gjQ+TIA==
   dependencies:
     respjs "^4.1.5"
     thunks "^4.9.3"
 
 thunks@^4.9.3:
-  version "4.9.4"
-  resolved "https://registry.yarnpkg.com/thunks/-/thunks-4.9.4.tgz#60e006ff7279d42deed28122bf8e74e58db1070b"
+  version "4.9.5"
+  resolved "https://registry.yarnpkg.com/thunks/-/thunks-4.9.5.tgz#fc764983de4de7230a2f300cfe2dc77092bc38f4"
+  integrity sha512-L0s0QzX1x0fcsP52TQs42t3CGX/z6lw0Ktz0ciex47OUhog5K3AsfH3mQ4JTLBYbnsNBhaIUcVMrY8sR+0Lo6w==
 
 timed-out@^4.0.0:
   version "4.0.1"
@@ -4312,9 +4330,10 @@ trim-right@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/trim-right/-/trim-right-1.0.1.tgz#cb2e1203067e0c8de1f614094b9fe45704ea6003"
 
-ts-node@^8.2.0:
-  version "8.2.0"
-  resolved "https://registry.yarnpkg.com/ts-node/-/ts-node-8.2.0.tgz#4a89754b00560bb24cd54526e1685fa38c45f240"
+ts-node@^8.5.4:
+  version "8.5.4"
+  resolved "https://registry.yarnpkg.com/ts-node/-/ts-node-8.5.4.tgz#a152add11fa19c221d0b48962c210cf467262ab2"
+  integrity sha512-izbVCRV68EasEPQ8MSIGBNK9dc/4sYJJKYA+IarMQct1RtEot6Xp0bXuClsbUSnKpg50ho+aOAx8en5c+y4OFw==
   dependencies:
     arg "^4.1.0"
     diff "^4.0.1"

@@ -24,7 +24,7 @@ const USE_AUTH = true;
 const clientProtocol = process.env.HTTP_PROTOCOL || "http";
 const schemes = [clientProtocol];
 const NODE_PORT = parseInt(process.env.NODE_PORT || "", 10) || 80;
-const host = `${process.env.HTTP_HOST || os.hostname}:${process.env.HTTP_PORT ||
+const host = `${process.env.HTTP_HOST || 'localhost'}:${process.env.HTTP_PORT ||
 NODE_PORT}`;
 
 let authGuestName: string = process.env.AUTH_GUEST_NAME || 'guest';

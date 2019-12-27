@@ -5,20 +5,16 @@ const Boom = require('boom');
 const Utility = require('../utils');
 const PluginSettings = config.settings;
 //const { applicationKeys, userKeys } = config;
-let logger: { log: any
-  trace(e: any): { log: any };
-  error:any;
-} ;
 
 
 module.exports = {
   checkIn: (server:any) => {
     return (request:any, reply:any) => {
-      logger && logger.log('-----------------> checkIn',!!server);
+      server && server.log('-----------------> checkIn',!!server);
       let token = 0;
       let expiresIn = '10m';
       try {
-        logger && logger.log(['common', 'checkIn'], 'payload received', JSON.stringify(request.payload));
+        server && server.log(['common', 'checkIn'], 'payload received', JSON.stringify(request.payload));
         // check payload and return credentials
         if (!request.payload) {
           throw Boom.unauthorized('payload not found!');
@@ -27,22 +23,22 @@ module.exports = {
 
         let foundAppKeys = applicationKeys.find((u:{id:string}) => u.id === applicationKey);
         if (!foundAppKeys) {
-          logger && logger.log('APP KEY not found, check for user key');
+          server && server.log('APP KEY not found, check for user key');
           foundAppKeys = userKeys && userKeys.find((u:{id:string}) => u.id === request.payload.applicationKey);
           if (!foundAppKeys) {
             throw Boom.unauthorized('invalid credentials');
           } else {
-            logger && logger.log('User KEY found!', 'foundAppKeys', foundAppKeys);
+            server && server.log('User KEY found!', 'foundAppKeys', foundAppKeys);
           }
         } else {
-          logger && logger.log('APP KEY found!', 'foundAppKeys', foundAppKeys);
+          server && server.log('APP KEY found!', 'foundAppKeys', foundAppKeys);
         }
         expiresIn = foundAppKeys && foundAppKeys.expiresIn || expiresIn;
 
         const payload = Utility.getCredentialsFromPayLoad(request, foundAppKeys);
 
 
-        logger && logger.log('sign with payload', payload);
+        server && server.log('sign with payload', payload);
 
 
         token = JWT.sign(
@@ -78,7 +74,7 @@ module.exports = {
           .state(PluginSettings.jwtCookieName, token);
 
       } catch (e) {
-        logger && logger.trace(e);
+        console.trace(e);
         throw Boom.unauthorized('invalid data');
       }
     };
@@ -86,12 +82,12 @@ module.exports = {
 
   },
   page404: (request:any, reply:any) => {
-    logger && logger.log('page404', request);
+    request && request.log('page404', request);
     reply.response({ result: 'Oops, 404 Page!' })
       .code(404);
   },
   healthCheck: (request:any, reply:any) => {
-    //logger && logger.log('--> healthcheck reply');
+    //server && server.log('--> healthcheck reply');
     return reply.response({ result: 'hey, I am still alive!' });
   }
 };
