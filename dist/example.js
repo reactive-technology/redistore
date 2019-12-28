@@ -1,53 +1,46 @@
-
-import "reflect-metadata";
-
-import WebServer from './webSocketServer';
-
-import {IServerConfig, schema } from './webSocketServer';
-import { NullableValidationMetadata, ValidationMetadata, PropertyValidationSchema } from '@/interface';
-import { mustBe,  a } from "./validators";
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = require("tslib");
+require("reflect-metadata");
+const webSocketServer_1 = tslib_1.__importDefault(require("./webSocketServer"));
+const validators_1 = require("./validators");
 //import * as Joi from "joi";
 //export declare function createSchemaFromMetadata<T>(metadata: ValidationMetadata<T>): PropertyValidationSchema;
-
 //============ REDIS STORE INIT======================
 const cuid = require('cuid');
 const os = require('os');
-import {RedisStore, RankingField} from './redistore';
-import {RedisClientFactory} from './redisClientFactory';
+const redistore_1 = require("./redistore");
+const redisClientFactory_1 = require("./redisClientFactory");
 const logger = console;
-const projectId = 'defaultPrj'
-RedisStore.createInstance({
+const projectId = 'defaultPrj';
+redistore_1.RedisStore.createInstance({
     config: {
         projectId,
         logger,
-        factory: new RedisClientFactory({logger, host: 'mock'})
+        factory: new redisClientFactory_1.RedisClientFactory({ logger, host: 'mock' })
     }
 });
-const redisStore = RedisStore.getInstance();
+const redisStore = redistore_1.RedisStore.getInstance();
 const healthCheckTest = redisStore.collection("healthCheckTest");
 //=======================================================
-
 console.log('start');
-
 const cors = {
     origin: ['*'],
     additionalHeaders: ['cache-control', 'x-requested-with'],
 };
 const headers = undefined;
 //createSchemaFromMetadata<T>(metadata);
-
 class ChatParams {
-    @mustBe(a.string().alphanum().min(1).max(30).required())
-    // @ts-ignore
-    public chatId?:string;
 }
-
-export async function healthCheck(request: any, h: any) {
+tslib_1.__decorate([
+    validators_1.mustBe(validators_1.a.string().alphanum().min(1).max(30).required())
+], ChatParams.prototype, "chatId", void 0);
+async function healthCheck(request, h) {
     const uid = cuid();
     let message;
     try {
-        await healthCheckTest.doc(os.hostname()).set({uid});
-        const res = await healthCheckTest.doc(os.hostname()).get({uid});
+        await healthCheckTest.doc(os.hostname()).set({ uid });
+        const res = await healthCheckTest.doc(os.hostname()).get({ uid });
         if (res.uid === uid) {
             return {
                 success: true,
@@ -56,13 +49,13 @@ export async function healthCheck(request: any, h: any) {
             };
         }
         message = `error reading data "${res.uid}" should be "${uid}"`;
-    } catch (e) {
+    }
+    catch (e) {
         message = 'ERROR: ' + e.message;
     }
-    return h.response({success: false, healthCheck: 'KO', message}).code(500);
+    return h.response({ success: false, healthCheck: 'KO', message }).code(500);
 }
-
-
+exports.healthCheck = healthCheck;
 const routes = [
     {
         path: '/health_check',
@@ -84,10 +77,10 @@ const routes = [
         config: {
             cors,
             id: 'getChat',
-            auth:false,
-            handler: (request: any, h: any)=>{
+            auth: false,
+            handler: (request, h) => {
                 return ({
-                   data:'Yo'
+                    data: 'Yo'
                 });
             },
             description: 'get chat',
@@ -99,17 +92,14 @@ const routes = [
             },
         },
     }
-    ];
-
-
-const conf:IServerConfig={};
-
-(async ()=> {
-    console.log('creating instance ..')
-    const server = await WebServer.createInstance(conf, routes);
+];
+const conf = {};
+(async () => {
+    console.log('creating instance ..');
+    const server = await webSocketServer_1.default.createInstance(conf, routes);
     server.onConnection(async (req) => {
-        console.log('on connection received')
+        console.log('on connection received');
     });
     console.log('server running at ', `http://${server.conf.host}:${server.conf.port}/documentation`);
 })().then();
-
+//# sourceMappingURL=example.js.map

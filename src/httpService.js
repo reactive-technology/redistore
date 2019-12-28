@@ -445,7 +445,7 @@ const verify = reqHandler =>
 const secretKey =
   'MIIDHDCCAgSgAwIBAgIIOY6dSWz3XVkwDQYJKoZIhvcNAQEFBQAwMTEvMC0GA1UE\nAxMmc2VjdXJldG9rZW4uc3lzdGVtLmdzZXJ2aWNlYWNjb3VudC5jb20wHhcNMTgw\nNzA0MjEyMDE1WhcNMTgwNzIxMDkzNTE1WjAxMS8wLQYDVQQDEyZzZWN1cmV0b2tl\nbi5zeXN0ZW0uZ3NlcnZpY2VhY2NvdW50LmNvbTCCASIwDQYJKoZIhvcNAQEBBQAD\nggEPADCCAQoCggEBAJpI8JYGWg9aEOW4KYznkam+lkwoRiNtl11e84mQfjk7xCsw\nJNL33InMP0J9d8k5deWLLbus8t0BPrv5Nemtxs9ZJmzxqnbgx0u1QBfyVzMNSdht\n0USqiE/6tyiD5H+2gzmWXz7Qy76bsCKpBthIvbi0ppdgVxV20XwHz6iTy07/X83m\nZZSMaqGbge+Jla8X3lPUjmi+EUzA93BOVylNA5wYKdUO+hARC3X2n1/NlsAL0GYC\nfs/B7IjXQQhGncQjM6NQI+uRxLzl/nhmmiReWULHBqfAsXSewZ1wax8g/Yc+CiVd\naEibJ9IuD307F+kxrpQIRjghYJ7iy0Ld0fzeqmkCAwEAAaM4MDYwDAYDVR0TAQH/\nBAIwADAOBgNVHQ8BAf8EBAMCB4AwFgYDVR0lAQH/BAwwCgYIKwYBBQUHAwIwDQYJ\nKoZIhvcNAQEFBQADggEBAC/VdgCckc1iBDi0r5qtp52rSMZuymhpvVYtsty9lp+S\ns8TwLiG3qVE78r/wyFjx92GG6F2lulY+5Yz4rhX+IzlrHzEjnGK69kCszSrzLJBZ\nh0v6UyjvIRsjoLsp19XfNNg7C9GNGEvploZ0551TxuBWSRyMRkpxlX7fFm8r7eD6\n5dvDlbnMnEymcLSWcE+JLTVefzHqRV8kyRsrJS6XcV8d9IYspKw5ksmMuCx5y7+s\ngC0M1v7e0ZM/4yce3yDVma8TYHzh30E5vK18hh9MvJeE3dcpp158OV2tT8CMx+wh\nmnSI2lMyfBvM2qWdGw1WfyHTWqhlti7UBjXs31ke+hA=';
 
-const start = (redisStore, reqHandler) =>
+const start = (redisStore, reqHandler) => {
   (async () => {
     try {
       server.route(routes(reqHandler, playingActionReqs, 'playingAction'));
@@ -506,13 +506,15 @@ const start = (redisStore, reqHandler) =>
     //eventBus.emit('server-started');
     Logger.info('Server is running at : ' + server.info.uri);
   })();
-
+}
+/*
 server.ext('onRequest', (request, h) => {
   request.plugins.metrics = {
     bench: new Hoek.Bench(),
   };
   return h.continue;
 });
+
 
 server.events.on('response', (request) => {
   const commonInfo = Logger.toCommonLogFormatLite(request);
@@ -529,6 +531,12 @@ server.events.on('response', (request) => {
     Logger.info(commonInfo, `status=${status} [${hrend} ms] ${hrend > 1000 ? 'OPTIM!' : ''} ${hrend > 2000 ? 'SRV SLOW!' : ''} ${cached ? 'CACHED!' : ''}`);
   }
 });
+*/
+
+
+
+
+ */
 /*
 server.ext('onPreResponse', (request) => {
   //&& request.response.output.statusCode === 404
