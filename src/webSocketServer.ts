@@ -3,7 +3,7 @@ import {IObject, IServerConfig} from "./interface";
 export * from "./interface";
 export * from "./validators";
 
-import {Request, Server, ServerRoute} from "hapi";
+import {Request, Server, ServerRoute} from "@hapi/hapi";
 
 const Nes = require("@hapi/nes");
 const Basic = require('@hapi/basic');

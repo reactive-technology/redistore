@@ -1,7 +1,7 @@
 const config = require('../config');
 const Package = require('../../package.json');
 const JWT = require('jsonwebtoken');
-const Boom = require('boom');
+const Boom = require('@hapi/boom');
 const Utility = require('../utils');
 const PluginSettings = config.settings;
 //const { applicationKeys, userKeys } = config;

@@ -1,7 +1,7 @@
 import { IObject, IServerConfig } from "./interface";
 export * from "./interface";
 export * from "./validators";
-import { Request, Server, ServerRoute } from "hapi";
+import { Request, Server, ServerRoute } from "@hapi/hapi";
 export declare type IHookFunc = (request: Request, h: any) => void;
 export declare class WebSocketServer {
     private host;
@@ -23,7 +23,7 @@ export declare class WebSocketServer {
     onConnection(func: IHookFunc): void;
     info(msg: any): void;
     error(msg: any): void;
-    getCredentials(request: Request): import("hapi").AuthCredentials;
+    getCredentials(request: Request): import("@hapi/hapi").AuthCredentials;
     publish(path: string, data: any): any;
     stop(path: string, data: any): Promise<void>;
     publishRef(ref: IObject): void;
