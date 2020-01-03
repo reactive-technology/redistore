@@ -439,9 +439,9 @@
     "@types/node" "*"
 
 "@types/hapi__joi@*", "@types/hapi__joi@^16.0.5":
-  version "16.0.5"
-  resolved "https://registry.yarnpkg.com/@types/hapi__joi/-/hapi__joi-16.0.5.tgz#8dd7143be3cc472d7a553514719acf8ecf237478"
-  integrity sha512-S4nI6xEl68ULkzxLkPYlPQgOxIv5FXhrb4A3TgBADYU/JBVfpXt8DwVWgkgYeX3h7S/wbVsNOsUONkcE3LwpqQ==
+  version "16.0.6"
+  resolved "https://registry.yarnpkg.com/@types/hapi__joi/-/hapi__joi-16.0.6.tgz#aa8f7dff93fdd3db6506ca2433a8302d8819fad1"
+  integrity sha512-rpU8FNMGxhYIF6bUlxZYO4drNjqUWCGrf4UINABAJzdcrPs4bP+Bz5VXzp8rOPZsNynnaDXbiU/MyjOGlfeczg==
 
 "@types/hapi__mimos@*":
   version "4.1.0"
@@ -461,14 +461,6 @@
   integrity sha512-vIySJYkwIGXMB5eFaZu3U8dS9CAZmteJfmkRn9bYH5uNcSvVgiwDROiwAkD7ej88qA+RZPkUK70KmeDs3LRHvw==
   dependencies:
     "@types/node" "*"
-
-"@types/hapi__vision@^5.5.1":
-  version "5.5.1"
-  resolved "https://registry.yarnpkg.com/@types/hapi__vision/-/hapi__vision-5.5.1.tgz#ad2e84f69457dd86ab65f3cbbe7932c809f0d5ab"
-  integrity sha512-YD/lrMeSIAVBX3vHLIFysxDuTRWUik1ITyG1TCZmUCda3WlBW+Ge07SibcF0m/8iESPjF9M0WwItDLnup9tjDw==
-  dependencies:
-    "@types/hapi__hapi" "*"
-    handlebars "^4.1"
 
 "@types/iron@*":
   version "5.0.1"
@@ -1807,7 +1799,7 @@ growl@1.10.5:
   resolved "https://registry.yarnpkg.com/growl/-/growl-1.10.5.tgz#f2735dc2283674fa67478b10181059355c369e5e"
   integrity sha512-qBr4OuELkhPenW6goKVXiv47US3clb3/IbuWF9KNKEijAy9oeHxU9IgzjvJhHkUzhaj7rOUD7+YGWqUjLp5oSA==
 
-handlebars@^4.1, handlebars@^4.5.3:
+handlebars@^4.5.3:
   version "4.5.3"
   resolved "https://registry.yarnpkg.com/handlebars/-/handlebars-4.5.3.tgz#5cf75bd8714f7605713511a56be7c349becb0482"
   integrity sha512-3yPecJoJHK/4c6aZhSvxOyG4vJKDshV36VHp0iVCDVh7o9w2vwi3NSnL2MMPj3YdduqaBcu7cGbggJQM0br9xA==
