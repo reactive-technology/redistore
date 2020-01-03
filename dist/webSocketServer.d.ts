@@ -1,6 +1,5 @@
 import { IObject, IServerConfig } from "./interface";
 export * from "./interface";
-export * from "./validators";
 import { Request, Server, ServerRoute } from "@hapi/hapi";
 export declare type IHookFunc = (request: Request, h: any) => void;
 export declare class WebSocketServer {

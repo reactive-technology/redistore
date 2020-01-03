@@ -1,7 +1,6 @@
 import {IObject, IServerConfig} from "./interface";
 
 export * from "./interface";
-export * from "./validators";
 
 import {Request, Server, ServerRoute} from "@hapi/hapi";
 
@@ -13,16 +12,16 @@ const Inert = require('@hapi/inert');
 const Vision = require('@hapi/vision');
 const HapiSwagger = require('hapi-swagger');
 
-const os = require("os");
-const Joi = require("joi");
+//const os = require("os");
+const Joi = require("@hapi/joi");
 const Pack = require("../package");
-const Jwt = require("./auth/jwt");
-const Auth = require("./auth");
+//const Jwt = require("./auth/jwt");
+//const Auth = require("./auth");
 import {RedisClientFactory} from "./redisClientFactory";
 
 import {RedisStore} from "./redistore";
 
-const USE_AUTH = true;
+//const USE_AUTH = true;
 const clientProtocol = process.env.HTTP_PROTOCOL || "http";
 const schemes = [clientProtocol];
 const NODE_PORT = parseInt(process.env.NODE_PORT || "", 10) || 80;
@@ -244,7 +243,7 @@ export class WebSocketServer {
             "sub2collectionId",
             "sub2docId"
         ];
-        const validation = (thePath: string) => {
+        const pathValidation = (thePath: string) => {
             const params: IObject = {};
             keywords.forEach(keyword => {
                 if (thePath.indexOf(keyword) != -1) {
@@ -252,7 +251,7 @@ export class WebSocketServer {
                 }
             });
             //this.logger.log('params',  params);
-            return {params};
+            return {params:Joi.object().keys(params)};
         };
 
         const gettersRoutes = subscriptions.map(path => ({
@@ -267,7 +266,7 @@ export class WebSocketServer {
                 },
                 description: "cache storage",
                 // tags: ['api', 'redis cache storage'],
-                validate: validation(path)
+                validate: pathValidation(path)
             }
         }));
         _subscriptions && subscriptions.push(..._subscriptions);
@@ -309,13 +308,6 @@ export class WebSocketServer {
             swaggerOptions = Object.assign({},swaggerOptions, hapiOptions.swaggerOptions)
         }
 
-        const swaggerOptions2 = {
-            info: {
-                title: 'Test API Documentation',
-                description: 'This is a sample example of API documentation.'
-            },
-            //auth: 'simple'
-        };
         const hapiRegister = [
             Inert,
             Vision,

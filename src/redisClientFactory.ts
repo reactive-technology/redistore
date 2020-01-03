@@ -6,17 +6,17 @@ const redisMock = require('redis-js').toPromiseStyle(Q.defer);
 const REDIS_HOST = process.env.REDIS_HOST || 'localhost';
 
 export class RedisClientFactory {
-    private host: string;
-    private password: string | undefined;
-    private logger: undefined | any;
-    private port: string[];
+    public host: string;
+    public password: string | undefined;
+    public logger: undefined | any;
+    public port: string[];
 
     constructor(conf: any = undefined) {
         this.host = conf && conf.host || REDIS_HOST;//os.hostname();
         this.password = conf && conf.password || undefined;
         this.port = conf && conf.port && conf.port.split(',') || ['6379'];
         this.logger = conf && conf.logger;
-        console.log('using redis client at', this.host, this.port)
+        console.log('using redis client with redis host =', this.host, this.port, '(conf host ',conf.host,')');
     }
 
     info(msg: string) {

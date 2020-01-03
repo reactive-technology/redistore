@@ -1,4 +1,10 @@
 // `jwt.js` - how to used in combination with JSON Web Tokens (JWT) `securityDefinition`
+//import "reflect-metadata";
+
+import {Request, ResponseToolkit, Server, ServerRoute} from "@hapi/hapi";
+import {ClassValidator, Description, Email, IObject, Required} from "hapi-joi-decorators/lib";
+
+
 
 const Hapi = require('@hapi/hapi');
 const Joi = require('@hapi/joi');
@@ -9,6 +15,27 @@ const Vision = require('@hapi/vision');
 
 const HapiSwagger = require('hapi-swagger');
 
+//import * as Joi from "joi";
+//import {Schema} from "joi";
+
+
+
+class Example extends ClassValidator {
+  @Required()
+  @Email()
+  email?: string="titi@free.fr";
+  @Description('the first number')
+  a?:number;
+
+  @Required()
+  @Description('the second number')
+  b?:number;
+
+}
+
+const payload = Example.toObject();
+
+
 
 let swaggerOptions = {
   info: {
@@ -18,7 +45,7 @@ let swaggerOptions = {
   //auth: 'simple'
 };
 
-const users = {
+const users:IObject = {
   jane: {
     username: 'jane',
     password: 'password', // in real world store Bcrypt 'secret' here
@@ -27,7 +54,7 @@ const users = {
   }
 };
 
-var validate = function (request, username, password) {
+const validate = function (request:Request, username:string, password:string) {
   const user = users[username];
   if (!user) {
     return {
@@ -50,6 +77,7 @@ var validate = function (request, username, password) {
     credentials
   };
 };
+
 
 const ser = async () => {
   const server = Hapi.Server({
@@ -76,14 +104,19 @@ const ser = async () => {
     method: 'PUT',
     path: '/v1/store/{id?}',
     options: {
-      handler: function (request, h) {
+      handler: function (request:Request, h:ResponseToolkit) {
         return h.response('success');
       },
       description: 'Update sum',
       notes: ['Update a sum in our data store'],
       tags: ['api'],
       validate: {
-
+        params: Joi.object({
+          id: Joi.string()
+            .required()
+            .description('the id of the sum in the store')
+        }),
+        payload
       }
     }
   });
@@ -94,7 +127,7 @@ const ser = async () => {
 
 ser()
   .then(server => {
-    console.log(`Server listening on ${server.info.uri}`);
+    console.log(`Server listening on ${server.info.uri}/documentation`);
   })
   .catch(err => {
     console.error(err);

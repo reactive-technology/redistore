@@ -13,6 +13,7 @@
     "@hapi/hapi": "^18.4.0",
     "@hapi/hoek": "^8.5.0",
     "@hapi/inert": "^5.2.2",
+    "@hapi/joi-date": "^2.0.1",
     "@hapi/nes": "^11.2.2",
     "@hapi/vision": "^5.5.4",
     "bcrypt": "^3.0.2",
@@ -22,6 +23,7 @@
     "dotenv": "^8.0.0",
     "flat": "^5.0.0",
     "hapi-auth-jwt2": "^8.2.0",
+    "hapi-joi-decorators": "^0.1.6",
     "hapi-plugin-websocket": "^2.0.14",
     "hapi-swagger": "^11.1.0",
     "json-stable-stringify": "^1.0.1",
@@ -31,13 +33,9 @@
     "redis-mock": "^0.47.0",
     "redlock": "^4.1.0",
     "reflect-metadata": "^0.1.13",
-    "relish": "^3.0.0",
     "request-ip": "^2.1.3",
     "sha1": "^1.1.1",
-    "thunk-redis": "^2.2.4",
-    "typings": "^2.1.1",
-    "ws": "^7.2.1",
-    "zafiro-validators": "^1.1.0"
+    "thunk-redis": "^2.2.4"
   },
   "devDependencies": {
     "@types/bluebird": "^3.5.27",

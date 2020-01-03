@@ -12,7 +12,7 @@ class RedisClientFactory {
         this.password = conf && conf.password || undefined;
         this.port = conf && conf.port && conf.port.split(',') || ['6379'];
         this.logger = conf && conf.logger;
-        console.log('using redis client at', this.host, this.port);
+        console.log('using redis client with redis host =', this.host, this.port, '(conf host ', conf.host, ')');
     }
     info(msg) {
         if (this.logger) {

@@ -1,8 +1,8 @@
 export declare class RedisClientFactory {
-    private host;
-    private password;
-    private logger;
-    private port;
+    host: string;
+    password: string | undefined;
+    logger: undefined | any;
+    port: string[];
     constructor(conf?: any);
     info(msg: string): void;
     error(msg: string): void;

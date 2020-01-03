@@ -1,11 +1,10 @@
 
-import "reflect-metadata";
+//import "reflect-metadata";
 
 import WebServer from './webSocketServer';
 
-import {IServerConfig, schema } from './webSocketServer';
-import { NullableValidationMetadata, ValidationMetadata, PropertyValidationSchema } from '@/interface';
-import { mustBe,  a } from "./validators";
+import {IServerConfig } from './webSocketServer';
+//import { mustBe,  a } from "./validators";
 //import * as Joi from "joi";
 //export declare function createSchemaFromMetadata<T>(metadata: ValidationMetadata<T>): PropertyValidationSchema;
 
@@ -14,13 +13,15 @@ const cuid = require('cuid');
 const os = require('os');
 import {RedisStore, RankingField} from './redistore';
 import {RedisClientFactory} from './redisClientFactory';
+import {Alphanum, ClassValidator, Max, Min, Required} from "hapi-joi-decorators/lib";
 const logger = console;
-const projectId = 'defaultPrj'
+const projectId = 'defaultPrj';
+const factoryConf = {logger, host: 'mock'};
 RedisStore.createInstance({
     config: {
         projectId,
         logger,
-        factory: new RedisClientFactory({logger, host: 'mock'})
+        factory: new RedisClientFactory(factoryConf)
     }
 });
 const redisStore = RedisStore.getInstance();
@@ -36,9 +37,11 @@ const cors = {
 const headers = undefined;
 //createSchemaFromMetadata<T>(metadata);
 
-class ChatParams {
-    @mustBe(a.string().alphanum().min(1).max(30).required())
-    // @ts-ignore
+class ChatParams extends ClassValidator{
+    @Alphanum()
+    @Min(1)
+    @Max(30)
+    @Required()
     public chatId?:string;
 }
 
@@ -94,7 +97,7 @@ const routes = [
             notes: 'get chat',
             tags: ['api', 'chat'],
             validate: {
-                //params: schema(ChatParams),
+                params: ChatParams.toObject(),
                 headers,
             },
         },
@@ -105,10 +108,10 @@ const routes = [
 const conf:IServerConfig={};
 
 (async ()=> {
-    console.log('creating instance ..')
+    console.log('creating instance ..');
     const server = await WebServer.createInstance(conf, routes);
     server.onConnection(async (req) => {
-        console.log('on connection received')
+        console.log('on connection received');
     });
     console.log('server running at ', `http://${server.conf.host}:${server.conf.port}/documentation`);
 })().then();
