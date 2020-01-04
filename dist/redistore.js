@@ -134,8 +134,11 @@ const unflattenExt = (o, types) => {
                         }
                         break;
                     case 'number':
-                        if (!isNaN(field)) {
-                            if (field.indexOf('.') > -1) {
+                        if (typeof field === 'number') {
+                            o[key] = field;
+                        }
+                        else if (!isNaN(field)) {
+                            if (field.indexOf && field.indexOf('.') > -1) {
                                 o[key] = parseFloat(field);
                             }
                             else {
