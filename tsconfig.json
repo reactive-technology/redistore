@@ -19,7 +19,7 @@
       "dist"
     ],
     "types": [
-      "joi", "reflect-metadata", "chai", "node"
+      "reflect-metadata", "chai", "node"
     ],
     "paths": {
       "@/*": [

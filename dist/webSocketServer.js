@@ -225,10 +225,11 @@ class WebSocketServer {
         // _subscriptions && subscriptions.concat(_subscriptions);
         let swaggerOptions = {
             securityDefinitions: {
-                Bearer: {
-                    type: "apiKey",
-                    name: "Authorization",
-                    in: "header"
+                jwt: {
+                    type: 'apiKey',
+                    name: 'Authorization',
+                    scheme: 'bearer',
+                    in: 'header'
                 },
                 simple: {
                     type: "basic",

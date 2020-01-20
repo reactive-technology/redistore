@@ -1,6 +1,6 @@
 {
   "name": "redistore",
-  "version": "1.3.3",
+  "version": "1.3.4",
   "description": "redis simple document storage api",
   "main": "dist/index.js",
   "directories": {
@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@hapi/basic": "^5.1.1",
-    "@hapi/boom": "^7.4.11",
+    "@hapi/boom": "^9.0.0",
     "@hapi/hapi": "^19.0.2",
     "@hapi/hoek": "^8.5.0",
     "@hapi/inert": "^6.0.1",
@@ -23,7 +23,7 @@
     "cuid": "^2.1.4",
     "dotenv": "^8.0.0",
     "flat": "^5.0.0",
-    "hapi-auth-jwt2": "^8.8.1",
+    "hapi-auth-jwt2": "^8.2.0",
     "hapi-joi-decorators": "^0.1.6",
     "hapi-plugin-websocket": "^2.0.14",
     "hapi-swagger": "^12.0.0",
@@ -42,7 +42,6 @@
   "devDependencies": {
     "@types/bluebird": "^3.5.27",
     "@types/dotenv": "^8.2.0",
-    "@types/hapi": "^18.0.2",
     "@types/hapi__inert": "^5.2.0",
     "@types/hapi__joi": "^16.0.5",
     "@types/jsonwebtoken": "^8.3.2",
@@ -64,7 +63,11 @@
     "yeps-server": "^1.1.2"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "build": "tsc",
+    "example": "ts-node examples/testjwt.ts",
+    "test-server": "node dist/server.js",
+    "dev": "ts-node server.ts"
   },
   "repository": {
     "type": "git",

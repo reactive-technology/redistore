@@ -15,9 +15,16 @@ let swaggerOptions = {
         jwt: {
             type: 'apiKey',
             name: 'Authorization',
+            scheme: 'bearer',
             in: 'header'
         }
-    }
+    },
+    security: [
+        {
+            jwt: [],
+        }
+    ]
+
 };
 
 const people:any = {
@@ -64,7 +71,8 @@ const ser = async () => {
         key: privateKey,
         in: "header",
         validate,
-        verifyOptions: { algorithms: ['HS256'] }
+        verifyOptions: { algorithms: ['HS256'] },
+
     });
 
     server.auth.default('jwt');
