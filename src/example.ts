@@ -9,11 +9,11 @@ import {IServerConfig } from './webSocketServer';
 //export declare function createSchemaFromMetadata<T>(metadata: ValidationMetadata<T>): PropertyValidationSchema;
 
 //============ REDIS STORE INIT======================
-const cuid = require('cuid');
-const os = require('os');
+import cuid from 'cuid';
+import os from 'os';
 import {RedisStore, RankingField} from './redistore';
 import {RedisClientFactory} from './redisClientFactory';
-import {Alphanum, ClassValidator, Max, Min, Required} from "hapi-joi-decorators/lib";
+import {Alphanum, ClassValidator, Max, Min, Required} from "hapi-joi-decorators";
 const logger = console;
 const projectId = 'defaultPrj';
 const factoryConf = {logger, host: 'mock'};

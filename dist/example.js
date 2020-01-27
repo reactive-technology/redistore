@@ -7,11 +7,11 @@ const webSocketServer_1 = tslib_1.__importDefault(require("./webSocketServer"));
 //import * as Joi from "joi";
 //export declare function createSchemaFromMetadata<T>(metadata: ValidationMetadata<T>): PropertyValidationSchema;
 //============ REDIS STORE INIT======================
-const cuid = require('cuid');
-const os = require('os');
+const cuid_1 = tslib_1.__importDefault(require("cuid"));
+const os_1 = tslib_1.__importDefault(require("os"));
 const redistore_1 = require("./redistore");
 const redisClientFactory_1 = require("./redisClientFactory");
-const lib_1 = require("hapi-joi-decorators/lib");
+const hapi_joi_decorators_1 = require("hapi-joi-decorators");
 const logger = console;
 const projectId = 'defaultPrj';
 const factoryConf = { logger, host: 'mock' };
@@ -32,21 +32,21 @@ const cors = {
 };
 const headers = undefined;
 //createSchemaFromMetadata<T>(metadata);
-class ChatParams extends lib_1.ClassValidator {
+class ChatParams extends hapi_joi_decorators_1.ClassValidator {
 }
 tslib_1.__decorate([
-    lib_1.Alphanum(),
-    lib_1.Min(1),
-    lib_1.Max(30),
-    lib_1.Required(),
+    hapi_joi_decorators_1.Alphanum(),
+    hapi_joi_decorators_1.Min(1),
+    hapi_joi_decorators_1.Max(30),
+    hapi_joi_decorators_1.Required(),
     tslib_1.__metadata("design:type", String)
 ], ChatParams.prototype, "chatId", void 0);
 async function healthCheck(request, h) {
-    const uid = cuid();
+    const uid = cuid_1.default();
     let message;
     try {
-        await healthCheckTest.doc(os.hostname()).set({ uid });
-        const res = await healthCheckTest.doc(os.hostname()).get({ uid });
+        await healthCheckTest.doc(os_1.default.hostname()).set({ uid });
+        const res = await healthCheckTest.doc(os_1.default.hostname()).get({ uid });
         if (res.uid === uid) {
             return {
                 success: true,
