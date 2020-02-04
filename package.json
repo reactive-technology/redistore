@@ -1,6 +1,6 @@
 {
   "name": "redistore",
-  "version": "1.3.6",
+  "version": "1.3.7",
   "description": "redis simple document storage api",
   "main": "dist/index.js",
   "directories": {
@@ -35,6 +35,7 @@
     "reflect-metadata": "^0.x.x",
     "request-ip": "^2.x.x",
     "sha1": "^1.x.x",
+    "susie": "^3.0.0",
     "thunk-redis": "^2.x.x"
   },
   "devDependencies": {
@@ -68,6 +69,7 @@
     "test": "mocha",
     "build": "tsc",
     "example": "ts-node examples/testjwt.ts",
+    "redistore_example": "ts-node src/example.ts",
     "test-server": "node dist/server.js",
     "dev": "ts-node server.ts"
   },
