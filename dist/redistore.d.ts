@@ -24,6 +24,7 @@ export declare class RedisStore {
     private types;
     private _lock;
     private unsubscribe;
+    private timeout;
     get path(): string;
     constructor(parent: any, type?: any, docName?: any, rankingField?: {} | undefined);
     static createInstance(config: any): any;
@@ -40,7 +41,8 @@ export declare class RedisStore {
     withRankingField(rankingField: any, filteringKeys?: any | undefined): this;
     getDocumentIndexes(pathIndexes?: string): Promise<any>;
     persist(path?: string | undefined): void;
-    expire(path: string): void;
+    expire(path: string, time: number): void;
+    expireIn(timeout: number): void;
     formatIndexSubKeys(index: any, data: any): any;
     formatIndexKey(index: {
         type: any;

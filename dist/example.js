@@ -76,6 +76,21 @@ const routes = [
             tags: ['api', 'admin'],
         },
     },
+    {
+        method: 'GET',
+        path: '/job',
+        config: {
+            cors,
+            auth: false,
+            cache: false,
+            id: 'job',
+            description: 'job ',
+            tags: ['api', 'chat'],
+            handler: async function (request, h) {
+                return h.event({ data: 'my data' });
+            }
+        }
+    },
     // quizzes routes
     {
         method: 'GET',

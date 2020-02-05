@@ -23,7 +23,7 @@ export declare class WebSocketServer {
     info(msg: any): void;
     error(msg: any): void;
     getCredentials(request: Request): import("@hapi/hapi").AuthCredentials;
-    publish(path: string, data: any): any;
+    publish(path: string, data: any): Promise<any>;
     stop(path: string, data: any): Promise<void>;
     publishRef(ref: IObject): void;
     publishRefs(refs: any[]): void;

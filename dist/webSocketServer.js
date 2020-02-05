@@ -6,6 +6,7 @@ const Hapi = require('@hapi/hapi');
 const Inert = require('@hapi/inert');
 const Vision = require('@hapi/vision');
 const HapiSwagger = require('hapi-swagger');
+const sha1 = require('sha1');
 //const os = require("os");
 const Joi = require("@hapi/joi");
 const Pack = require("../package");
@@ -122,9 +123,15 @@ class WebSocketServer {
     getCredentials(request) {
         return request.auth.credentials;
     }
-    publish(path, data) {
-        // @ts-ignore
-        return this.hapi.publish(path, data);
+    async publish(path, data) {
+        const sId = data._uid || sha1(JSON.stringify(data));
+        const nbAdd = await this.store.getRedisClient().sadd(`${path}:published`, sId);
+        this.store.expire(`${path}:published`, 5);
+        if (nbAdd === 1) {
+            // @ts-ignore
+            return this.hapi.publish(path, data);
+        }
+        return null;
     }
     stop(path, data) {
         return this.hapi.stop();
@@ -148,7 +155,7 @@ class WebSocketServer {
         const onDisconnection = async (r, h) => {
             try {
                 if (this.hooks.onDisconnection) {
-                    await Promise.resolve(this.hooks.onDisconnection(r, h));
+                    await this.hooks.onDisconnection(r, h);
                 }
             }
             catch (e) {
@@ -158,7 +165,7 @@ class WebSocketServer {
         const onConnection = async (r, h) => {
             try {
                 if (this.hooks.onConnection) {
-                    await Promise.resolve(this.hooks.onConnection(r, h));
+                    await this.hooks.onConnection(r, h);
                 }
             }
             catch (e) {
@@ -169,7 +176,7 @@ class WebSocketServer {
             try {
                 this.logger && this.logger.log("client subscribe to", path);
                 if (this.hooks.onSubscribe) {
-                    await Promise.resolve(this.hooks.onSubscribe(s, path, params));
+                    await this.hooks.onSubscribe(s, path, params);
                 }
             }
             catch (e) {
@@ -261,6 +268,7 @@ class WebSocketServer {
         const hapiRegister = [
             Inert,
             Vision,
+            require('susie'),
             {
                 plugin: HapiSwagger,
                 options: swaggerOptions

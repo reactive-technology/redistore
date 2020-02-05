@@ -80,6 +80,21 @@ const routes = [
             tags: ['api', 'admin'],
         },
     },
+    {
+        method: 'GET',
+        path: '/job',
+        config: {
+            cors,
+            auth: false,
+            cache: false,
+            id: 'job',
+            description: 'job ',
+            tags: ['api', 'chat'],
+            handler: async function (request:any, h:any) {
+                return h.event({data: 'my data'});
+            }
+        }
+    },
     // quizzes routes
     {
         method: 'GET',

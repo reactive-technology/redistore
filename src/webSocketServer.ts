@@ -11,6 +11,7 @@ const Hapi = require('@hapi/hapi');
 const Inert = require('@hapi/inert');
 const Vision = require('@hapi/vision');
 const HapiSwagger = require('hapi-swagger');
+const sha1 = require('sha1');
 
 //const os = require("os");
 const Joi = require("@hapi/joi");
@@ -166,9 +167,15 @@ export class WebSocketServer {
         return request.auth.credentials;
     }
 
-    publish(path: string, data: any) {
-        // @ts-ignore
-        return this.hapi.publish(path, data);
+    async publish(path: string, data: any) {
+        const sId = data._uid || sha1(JSON.stringify(data)) ;
+        const nbAdd = await this.store.getRedisClient().sadd(`${path}:published`, sId);
+        this.store.expire(`${path}:published`,5);
+        if (nbAdd === 1) {
+            // @ts-ignore
+            return this.hapi.publish(path, data);
+        }
+        return null;
     }
 
     stop(path: string, data: any) {
@@ -196,7 +203,7 @@ export class WebSocketServer {
         const onDisconnection = async (r: Request, h: any) => {
             try {
                 if (this.hooks.onDisconnection) {
-                    await Promise.resolve(this.hooks.onDisconnection(r, h));
+                    await this.hooks.onDisconnection(r, h);
                 }
             } catch (e) {
                 this.logger.error("onDisconnection", e);
@@ -205,7 +212,7 @@ export class WebSocketServer {
         const onConnection = async (r: Request, h: any) => {
             try {
                 if (this.hooks.onConnection) {
-                    await Promise.resolve(this.hooks.onConnection(r, h));
+                    await this.hooks.onConnection(r, h);
                 }
             } catch (e) {
                 this.logger.error("onConnection", e);
@@ -215,7 +222,7 @@ export class WebSocketServer {
             try {
                 this.logger && this.logger.log("client subscribe to", path);
                 if (this.hooks.onSubscribe) {
-                    await Promise.resolve(this.hooks.onSubscribe(s, path, params));
+                    await this.hooks.onSubscribe(s, path, params);
                 }
             } catch (e) {
                 this.logger.error("onSubscribe", e);
@@ -251,7 +258,7 @@ export class WebSocketServer {
                 }
             });
             //this.logger.log('params',  params);
-            return {params:Joi.object().keys(params)};
+            return {params: Joi.object().keys(params)};
         };
 
         const gettersRoutes = subscriptions.map(path => ({
@@ -302,16 +309,17 @@ export class WebSocketServer {
         };
 
         if (hapiOptions && hapiOptions.nesOptions) {
-            nesOptions = Object.assign({},hapiOptions.nesOptions,nesOptions)
+            nesOptions = Object.assign({}, hapiOptions.nesOptions, nesOptions)
         }
 
         if (hapiOptions && hapiOptions.swaggerOptions) {
-            swaggerOptions = Object.assign({},swaggerOptions, hapiOptions.swaggerOptions)
+            swaggerOptions = Object.assign({}, swaggerOptions, hapiOptions.swaggerOptions)
         }
 
         const hapiRegister = [
             Inert,
             Vision,
+            require('susie'),
             {
                 plugin: HapiSwagger,
                 options: swaggerOptions
@@ -341,7 +349,7 @@ export class WebSocketServer {
         const basicValidateFunc = async (request: Request, username: string, password: string) => {
             //const isValid = await Bcrypt.compare(password, user.password);
             console.log('internal auto check basic auth', password, password);
-            const isValid = authGuestName ? username === authGuestName && password === authGuestPasswd : true ;
+            const isValid = authGuestName ? username === authGuestName && password === authGuestPasswd : true;
             const credentials = {
                 id: username,
                 name: username

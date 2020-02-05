@@ -268,6 +268,7 @@ export class RedisStore {
     private types: any;
     private _lock: any;
     private unsubscribe: any;
+    private timeout: number = 0;
 
     get path() {
         return this.pathName;
@@ -358,6 +359,9 @@ export class RedisStore {
             this.pathIndexes = `${this.pathName}@indexes`;
             this.pathMetadata = `${this.pathName}@metadata`;
             this.defaultRankingIndex = rankingField || {};
+            if(parent.timeout){
+                this.redisClient.expire(this.pathName, parent.timeout);
+            }
             if (rankingField) {
                 this.withRankingField(rankingField);
             }
@@ -438,7 +442,7 @@ export class RedisStore {
     item(docName: any) {
         try {
             // this.logger.log(' doc','on proxy ', this.pathName,'type',this.docType,'ref',this.ref.constructor.name);
-            if (this.id && this.docType === TYPE_DOCUMENT) {
+            if (this.id && (this.docType === TYPE_DOCUMENT || this.docType === TYPE_COLLECTION)) {
                 const obj = new RedisStore(this, TYPE_ITEM, docName);
                 return obj;
             }
@@ -607,15 +611,21 @@ export class RedisStore {
         if (!path) {
             path = this.pathName;
         }
-        //this.getRedisClient().persist(path);
+        this.getRedisClient().persist(path);
     }
 
-    expire(path: string) {
+    expire(path: string, time:number) {
         if (!path) {
             path = this.pathName;
         }
         this.getRedisClient()
-            .expire(path);
+            .expire(path, time);
+    }
+
+    expireIn(timeout:number) {
+        this.timeout = timeout;
+        this.getRedisClient()
+            .expire(this.pathName, this.timeout);
     }
 
     formatIndexSubKeys(index: any, data: any) {
@@ -722,7 +732,11 @@ export class RedisStore {
                                             return this.getRedisClient()
                                                 .zadd(rankingPoolKey, rankValue, this.id)
                                                 .then(() => {
-                                                    this.persist(rankingPoolKey);
+                                                    if(this.timeout || this.parent.timeout){
+                                                        this.expire(rankingPoolKey,this.timeout|| this.parent.timeout);
+                                                    }else {
+                                                        this.persist(rankingPoolKey);
+                                                    }
                                                     //this.logger.log('ok set ranking ',rankingPoolKey,this.id);
                                                     this.getRedisClient()
                                                         .set(rankingKeyId, rankingPoolKey)
@@ -1553,8 +1567,11 @@ export class RedisStore {
 
             const ok = await this.getRedisClient()
                 .hmset(this.pathName, data);
-            this.persist();
-
+            if(this.timeout|| this.parent.timeout){
+                this.expireIn(this.timeout|| this.parent.timeout);
+            }else {
+                this.persist();
+            }
             if (this.docType === TYPE_DOCUMENT) {
                 // this.logger.log('set coll sadd', me.parent.pathCollection, me.id)
                 //TODO: check if this still usefull
@@ -1574,8 +1591,15 @@ export class RedisStore {
                                 .sadd(keyPath, this.id)
                                 .then()
                                 .catch((err: any) => {
-                                    err && this.logger.info('index update for ' + key);
-                                    !err && this.persist(keyPath);
+                                    if(err){
+                                        this.logger.info('index update for ' + key);
+                                    }else {
+                                        if (this.timeout|| this.parent.timeout) {
+                                            this.expire(keyPath, this.timeout|| this.parent.timeout);
+                                        } else {
+                                            this.persist(keyPath);
+                                        }
+                                    }
                                     // err && reject(err);
                                 });
                         }
@@ -1815,22 +1839,25 @@ export class RedisStore {
     }
 
     async setMetadata(_data: any) {
-        const me = this;
         // this.logger.log('+++++++++ calling redis set with metadata', _data, 'opt');
         try {
             const data = _data && flattenExt(_data);
             if (data) {
                 //this.logger.debug('+ redis set with formatted metadata', me.docType, data, me.pathMetadata);
-                const res = await me.getRedisClient()
-                    .hmset(me.pathMetadata, data);
-                me.persist(me.pathMetadata);
+                const res = await this.getRedisClient()
+                    .hmset(this.pathMetadata, data);
+                if(this.timeout){
+                    this.expire(this.pathMetadata, this.timeout|| this.parent.timeout);
+                }else {
+                    this.persist(this.pathMetadata|| this.parent.timeout);
+                }
                 return res;
             }
-            me.logger.debug('cannot set empty value', me.id);
+            this.logger.debug('cannot set empty value', this.id);
             return 'cannot set empty value';
         } catch (e) {
-            me.logger.error('setMetaData err : ' + e.message);
-            me.logger.error(e.stack);
+            this.logger.error('setMetaData err : ' + e.message);
+            this.logger.error(e.stack);
             throw e;
         }
     }
