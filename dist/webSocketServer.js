@@ -124,12 +124,14 @@ class WebSocketServer {
         return request.auth.credentials;
     }
     async publish(path, data) {
-        const sId = data._uid || sha1(JSON.stringify(data));
-        const nbAdd = await this.store.getRedisClient().sadd(`${path}:published`, sId);
-        this.store.expire(`${path}:published`, 5);
-        if (nbAdd === 1) {
-            // @ts-ignore
-            return this.hapi.publish(path, data);
+        if (data) {
+            const sId = data._uid || sha1(JSON.stringify(data));
+            const nbAdd = await this.store.getRedisClient().sadd(`${path}:published`, sId);
+            this.store.expire(`${path}:published`, 5);
+            if (nbAdd === 1) {
+                // @ts-ignore
+                return this.hapi.publish(path, data);
+            }
         }
         return null;
     }
