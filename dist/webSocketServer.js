@@ -29,6 +29,7 @@ const cors = {
 class WebSocketServer {
     constructor(conf) {
         this.logger = console;
+        this._subscriptionFilters = {};
         this.hooks = {};
         this.users = {
             guest: {
@@ -44,6 +45,7 @@ class WebSocketServer {
         const hapiConf = (conf && conf.hapi) || {
             port: this.port
         };
+        conf && this.addSubscriptionFilter(conf.filters);
         this.hapi = new Hapi.Server(hapiConf);
         const logger = console;
         this.store = new redistore_1.RedisStore({
@@ -317,7 +319,7 @@ class WebSocketServer {
                     if (route.method === "SUB") {
                         // this.hapi.publish(route.path, data);
                         // @ts-ignore
-                        this.hapi.subscription(route.path, { onSubscribe });
+                        this.hapi.subscription(route.path, { onSubscribe, filter: this.getFilter(route.path) });
                         const getterRoute = Object.assign({}, route, { method: "GET" }, {
                             config: Object.assign({}, {
                                 handler: async () => {
@@ -343,7 +345,7 @@ class WebSocketServer {
         gettersRoutes.map(route => this.hapi.route(Object.assign({}, route)));
         subscriptions.map(subscription => 
         // @ts-ignore
-        this.hapi.subscription(subscription, { onSubscribe }));
+        this.hapi.subscription(subscription, { onSubscribe, filter: this.getFilter(subscription) }));
         await this.hapi.start();
         this.hapi
             .table()
@@ -354,6 +356,15 @@ class WebSocketServer {
         subscriptions &&
             subscriptions.forEach &&
             subscriptions.forEach(subscription => this.logger && this.logger.log(subscription));
+    }
+    getFilter(route) {
+        const specificFilter = Object.keys(this._subscriptionFilters).filter((path) => route === path)[0];
+        return specificFilter || this._subscriptionFilters['*'];
+    }
+    addSubscriptionFilter(filters) {
+        if (filters) {
+            this._subscriptionFilters = { ...this._subscriptionFilters, ...filters };
+        }
     }
 }
 exports.WebSocketServer = WebSocketServer;

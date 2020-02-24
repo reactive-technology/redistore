@@ -9,5 +9,6 @@ export interface IServerConfig extends IObjectIndexer<any> {
     port?: string;
     logger?: IObject;
     hooks?: IObject;
+    filters?: IObject;
     register?(a: any): any;
 }

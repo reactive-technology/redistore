@@ -5,8 +5,9 @@ export declare type IHookFunc = (request: Request, h: any) => void;
 export declare class WebSocketServer {
     private host;
     private password?;
-    private port;
-    private logger;
+    private readonly port;
+    private readonly logger;
+    private _subscriptionFilters;
     private hooks;
     hapi: Server;
     private users;
@@ -28,5 +29,7 @@ export declare class WebSocketServer {
     publishRef(ref: IObject): void;
     publishRefs(refs: any[]): void;
     _start(routes?: ServerRoute[], _subscriptions?: any[], hapiOptions?: IObject): Promise<void>;
+    private getFilter;
+    addSubscriptionFilter(filters?: IObject): void;
 }
 export default WebSocketServer;

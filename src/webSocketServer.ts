@@ -42,8 +42,9 @@ export type IHookFunc = (request: Request, h: any) => void;
 export class WebSocketServer {
     private host: string;
     private password?: string;
-    private port: string | number;
-    private logger: IObject = console;
+    private readonly port: string | number;
+    private readonly logger: IObject = console;
+    private _subscriptionFilters:IObject = {};
     private hooks: {
         onSubscribe?(s: any, path: string, params: IObject): void;
         onDisconnection?: IHookFunc;
@@ -74,6 +75,7 @@ export class WebSocketServer {
         const hapiConf = (conf && conf.hapi) || {
             port: this.port
         };
+        conf && this.addSubscriptionFilter(conf.subscriptionFilters);
         this.hapi = new Hapi.Server(hapiConf);
         const logger = console;
         this.store = new RedisStore({
@@ -142,6 +144,7 @@ export class WebSocketServer {
         await _server._start(routes, subscriptions, hapiOptions);
         return _server;
     }
+
 
     onDisconnection(func: IHookFunc) {
         this.hooks.onDisconnection = func;
@@ -370,8 +373,8 @@ export class WebSocketServer {
                 routes.map(route => {
                     if (route.method === "SUB") {
                         // this.hapi.publish(route.path, data);
-                        // @ts-ignore
-                        this.hapi.subscription(route.path, {onSubscribe});
+                            // @ts-ignore
+                        this.hapi.subscription(route.path, {onSubscribe, filter : this.getFilter(route.path)});
                         const getterRoute: ServerRoute = Object.assign(
                             {},
                             route,
@@ -405,7 +408,7 @@ export class WebSocketServer {
 
         subscriptions.map(subscription =>
             // @ts-ignore
-            this.hapi.subscription(subscription, {onSubscribe})
+            this.hapi.subscription(subscription, {onSubscribe, filter : this.getFilter(subscription)})
         );
 
         await this.hapi.start();
@@ -423,6 +426,17 @@ export class WebSocketServer {
         subscriptions.forEach(
             subscription => this.logger && this.logger.log(subscription)
         );
+    }
+
+    private getFilter(route: string) {
+        const specificFilter = Object.keys(this._subscriptionFilters).filter((path: string) => route === path)[0];
+        return specificFilter ||  this._subscriptionFilters['*'];
+    }
+
+    public addSubscriptionFilter (filters?:IObject) {
+        if(filters) {
+            this._subscriptionFilters = {...this._subscriptionFilters, ...filters};
+        }
     }
 }
 
