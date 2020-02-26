@@ -45,7 +45,7 @@ class WebSocketServer {
         const hapiConf = (conf && conf.hapi) || {
             port: this.port
         };
-        conf && this.addSubscriptionFilter(conf.filters);
+        conf && this.addSubscriptionFilter(conf.subscriptionFilters);
         this.hapi = new Hapi.Server(hapiConf);
         const logger = console;
         this.store = new redistore_1.RedisStore({
@@ -359,7 +359,7 @@ class WebSocketServer {
     }
     getFilter(route) {
         const specificFilter = Object.keys(this._subscriptionFilters).filter((path) => route === path)[0];
-        return specificFilter || this._subscriptionFilters['*'];
+        return this._subscriptionFilters[specificFilter] || this._subscriptionFilters['*'];
     }
     addSubscriptionFilter(filters) {
         if (filters) {
