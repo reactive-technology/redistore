@@ -430,7 +430,7 @@ export class WebSocketServer {
 
     private getFilter(route: string) {
         const specificFilter = Object.keys(this._subscriptionFilters).filter((path: string) => route === path)[0];
-        return specificFilter ||  this._subscriptionFilters['*'];
+        return this._subscriptionFilters[specificFilter] || this._subscriptionFilters['*'];
     }
 
     public addSubscriptionFilter (filters?:IObject) {
