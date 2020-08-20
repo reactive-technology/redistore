@@ -17,7 +17,7 @@
     "@hapi/nes": "^12.x.x",
     "@hapi/vision": "^6.x.x",
     "@hapi/wreck": "^17.x.x",
-    "bcrypt": "^3.x.x",
+    "bcrypt": "^5.x.x",
     "bluebird": "^3.x.x",
     "cuid": "^2.x.x",
     "dotenv": "^8.x.x",
